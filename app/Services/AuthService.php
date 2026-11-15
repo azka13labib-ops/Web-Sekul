@@ -2,25 +2,18 @@
 
 namespace App\Services;
 
-use App\Contracts\Interfaces\Eloquent\UserRepositoryInterface;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
 class AuthService
 {
-    protected $userRepo;
-
-    public function __construct(UserRepositoryInterface $userRepo)
-    {
-        $this->userRepo = $userRepo;
-    }
-
     public function register(array $data)
     {
         $data['password'] = Hash::make($data['password']);
         $data['role'] = 'student';
         
-        $user = $this->userRepo->create($data);
+        $user = User::create($data);
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return ['user' => $user, 'token' => $token];
@@ -28,7 +21,7 @@ class AuthService
 
     public function login(array $credentials)
     {
-        $user = $this->userRepo->findByEmail($credentials['email']);
+        $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([

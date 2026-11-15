@@ -2,23 +2,15 @@
 
 namespace App\Services;
 
-use App\Contracts\Interfaces\Eloquent\RegistrationRepositoryInterface;
-use Illuminate\Support\Facades\Crypt;
+use App\Models\Registration;
+use App\Models\RegistrationDocument;
 use Illuminate\Support\Str;
-use App\Jobs\SendPpdbNotification;
 
 class PpdbService
 {
-    protected $registrationRepo;
-
-    public function __construct(RegistrationRepositoryInterface $registrationRepo)
-    {
-        $this->registrationRepo = $registrationRepo;
-    }
-
     public function submitRegistration(array $data, $user)
     {
-        $existing = $this->registrationRepo->findByUser($user->id);
+        $existing = Registration::where('user_id', $user->id)->first();
         if ($existing) {
             throw new \Exception('Anda sudah melakukan pendaftaran.');
         }
@@ -38,27 +30,21 @@ class PpdbService
             'status' => 'pending'
         ];
 
-        $registration = $this->registrationRepo->create($registrationData);
-
-        SendPpdbNotification::dispatch($registration->toArray());
-
-        return $registration;
+        return Registration::create($registrationData);
     }
 
     public function uploadDocument(array $data, $user, $file)
     {
-        $registration = $this->registrationRepo->findByUser($user->id);
+        $registration = Registration::where('user_id', $user->id)->first();
         if (!$registration) {
-            throw new \Exception('Silakan isi formulir PPDB terlebih dahulu.');
+            throw new \Exception('Data pendaftaran tidak ditemukan.');
         }
 
-        $path = $file->store('ppdb_documents', 'local');
+        $path = $file->store('ppdb/documents/' . $registration->registration_number, 'public');
 
-        return $this->registrationRepo->updateOrCreateDocument($registration->id, $data['type'], $path);
-    }
-    
-    public function getStatus($user)
-    {
-        return $this->registrationRepo->findByUser($user->id);
+        return RegistrationDocument::updateOrCreate(
+            ['registration_id' => $registration->id, 'document_type' => $data['document_type']],
+            ['file_path' => $path]
+        );
     }
 }
