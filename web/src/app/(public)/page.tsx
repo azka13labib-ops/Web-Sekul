@@ -19,13 +19,13 @@ export default async function LandingPage() {
   return (
     <div className="flex flex-col w-full bg-white">
       {/* 1. Hero Section with image.png background, emblem, and 3-Card Strip */}
-      <HeroSection />
+      <HeroSection academicYear={ppdbInfo?.academic_year} isPpdbOpen={ppdbInfo?.is_open} />
 
       {/* 2. About Section (2-Column narrative & student achievement photo) */}
       <AboutSection />
 
       {/* 3. News & Media Center (Grid news, podcast, calendar, agenda, and PPDB CTA) */}
-      <NewsMediaSection initialNews={newsList} initialAgendas={agendas} isPpdbOpen={ppdbInfo?.is_open} />
+      <NewsMediaSection initialNews={newsList} initialAgendas={agendas} isPpdbOpen={ppdbInfo?.is_open} academicYear={ppdbInfo?.academic_year} />
 
       {/* 4. AI-SEO Answer Center & FAQ (with FAQPage schema) */}
       <FaqSection />

@@ -39,9 +39,10 @@ interface NewsMediaSectionProps {
   initialNews?: NewsItem[];
   initialAgendas?: AgendaItem[];
   isPpdbOpen?: boolean;
+  academicYear?: string;
 }
 
-export default function NewsMediaSection({ initialNews = [], initialAgendas = [], isPpdbOpen = true }: NewsMediaSectionProps) {
+export default function NewsMediaSection({ initialNews = [], initialAgendas = [], isPpdbOpen = true, academicYear }: NewsMediaSectionProps) {
   // Only show pinned news
   const pinnedNews = initialNews.filter(n => n.is_pinned);
   const totalNews = pinnedNews.length;
@@ -273,7 +274,7 @@ export default function NewsMediaSection({ initialNews = [], initialAgendas = []
                   Penerimaan Siswa Baru
                 </span>
                 <h3 className="text-sm font-bold text-white mb-2">
-                  Pendaftaran PPDB 2026/2027 Masih Dibuka
+                  Pendaftaran PPDB {academicYear || 'Tahun Ajaran Baru'} Masih Dibuka
                 </h3>
                 <p className="text-xs text-blue-100 mb-4 leading-relaxed">
                   Pilih Jalur Reguler atau Jalur Prestasi secara online tanpa perlu antre di sekolah.

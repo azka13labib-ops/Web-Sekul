@@ -5,7 +5,12 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { BookOpen, Building2, Trophy, ArrowRight } from 'lucide-react';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  academicYear?: string;
+  isPpdbOpen?: boolean;
+}
+
+export default function HeroSection({ academicYear, isPpdbOpen = true }: HeroSectionProps) {
   const highlightPillars = [
     {
       title: 'Kurikulum & Peminatan',
@@ -85,7 +90,7 @@ export default function HeroSection() {
               href="/ppdb"
               className="px-6 py-3 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold text-xs sm:text-sm rounded-lg shadow-sm transition-colors flex items-center gap-2"
             >
-              <span>Pendaftaran PPDB 2026</span>
+              <span>{isPpdbOpen ? `Pendaftaran PPDB ${academicYear || 'Baru'}` : 'Informasi PPDB'}</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
