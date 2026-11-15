@@ -80,7 +80,9 @@ export function FloatingChatbot() {
           });
         }
       })
-      .catch(err => console.error("Failed to fetch PPDB info:", err));
+      .catch(() => {
+        // Silently fallback if backend is unreachable or offline
+      });
   }, []);
 
   useEffect(() => {
